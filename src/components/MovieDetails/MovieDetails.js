@@ -7,6 +7,7 @@ import {
     removeSelectedMovieOrShow,
 } from "../../features/movies/MovieSlice";
 import {useParams} from "react-router-dom";
+import LoadingIcons from "react-loading-icons";
 
 const MovieDetail = () => {
     const { imdbID } = useParams();
@@ -22,7 +23,8 @@ const MovieDetail = () => {
     return (
         <div className="movie-section">
             {Object.keys(data).length === 0 ? (
-                <div>...Loading</div>
+
+                <LoadingIcons.Bars />
             ) : (
                 <>
                     <div className="section-left">

@@ -11,8 +11,3 @@
   }
 }
 
-.movieContainer{
-  display: grid;
-  grid-template-columns: repeat(5,minmax(220px,1fr));
-  grid-gap: 15px;
-}

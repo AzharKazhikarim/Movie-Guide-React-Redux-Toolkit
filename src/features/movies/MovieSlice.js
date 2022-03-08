@@ -3,16 +3,15 @@ import movieApi from "../../common/api/movieApi";
 import {APIKey} from "../../common/api/movieApiKey";
 
 export const fetchAsyncMovies = createAsyncThunk('movies/fetchAsyncMovies',
-    async () => {
-        const movieText = "Avengers";
-        const response = await movieApi.get(`?apiKey=${APIKey}&s=${movieText}&type=movie`)
+    async (term) => {
+
+        const response = await movieApi.get(`?apiKey=${APIKey}&s=${term}&type=movie`)
         return response.data;
     })
 
 export const fetchAsyncShows = createAsyncThunk('movies/fetchAsyncShows',
-    async () => {
-        const series = "Friends";
-        const response = await movieApi.get(`?apiKey=${APIKey}&s=${series}&type=series`)
+    async (term) => {
+        const response = await movieApi.get(`?apiKey=${APIKey}&s=${term}&type=series`)
         return response.data;
     })
 
@@ -28,6 +27,7 @@ const initialState = {
     movies: {},
     shows: {},
     selectedMovieOrShow:{},
+    loading:false,
 }
 const movieSlice = createSlice({
     name: "movies",
@@ -39,23 +39,25 @@ const movieSlice = createSlice({
         },
     },
     extraReducers: {
-        [fetchAsyncMovies.pending]: () => {
+        [fetchAsyncMovies.pending]: (state) => {
             console.log("Pending...")
+            return  {...state,loading:true}
         },
         [fetchAsyncMovies.fulfilled]: (state, {payload}) => {
             console.log("Success!")
-            return {...state, movies: payload}
+            return {...state, movies: payload,loading:false}
         },
-        [fetchAsyncMovies.rejected]: () => {
+        [fetchAsyncMovies.rejected]: (state) => {
             console.log("Rejected!")
+            return {...state,loading:false}
         },
         [fetchAsyncShows.fulfilled]: (state, {payload}) => {
             console.log("Success!")
-            return {...state, shows: payload}
+            return {...state, shows: payload,loading:false}
         },
         [fetchAsyncShowsOrMovieDetails.fulfilled]: (state, {payload}) => {
             console.log("Success!")
-            return {...state, selectedMovieOrShow: payload}
+            return {...state, selectedMovieOrShow: payload,loading:false}
         },
     }
 })
@@ -63,5 +65,6 @@ const movieSlice = createSlice({
 export const {removeSelectedMovieOrShow} = movieSlice.actions
 export const getAllMovies = (state) => state.movies.movies
 export const getAllShows = (state) => state.movies.shows
+export const loading = (state) => state.movies.loading
 export const getSelectedMovieOrShow= (state) => state.movies.selectedMovieOrShow
 export default movieSlice.reducer
